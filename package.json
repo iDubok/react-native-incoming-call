@@ -1,7 +1,7 @@
 {
   "name": "@bob.hardcoder/react-native-incoming-call",
   "version": "1.0.0",
-  "description": "Fork of improved version of react-native-incoming-call",
+  "description": "Fork of improved version of react-native-incoming-call by bkdev98 and icc-guerrero",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

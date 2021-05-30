@@ -2,6 +2,9 @@
 
 > React Native module to display custom incoming call activity, best result when using with firebase background messaging. Only for Android since iOS we have VoIP.
 
+## Fork note
+It's a fork of the most supported version of react-native-incoming-call originally created by @bkdev98 and improved by @icc-guerrero created to introduce some customizations and make the latest version available on npm since the author has no enough time to release the changes. Later, when it is good enough, it could be merged into the original repo.
+
 Yes I heard you could use **self managed ConnectionService** thing. But since I'm not an Android expert, this is a solution I found acceptable.
 
 You could also wait for [this feature request](https://github.com/react-native-webrtc/react-native-callkeep/issues/43) from `react-native-callkeep` to be resolved and have an easier life.
@@ -30,11 +33,11 @@ Luckily I got a client project which needs this feature again and now I have tim
 
 ## Getting started
 
-`$ npm install react-native-incoming-call --save`
+`$ npm install @bob.hardcoder/react-native-incoming-call --save`
 
 or
 
-`$ yarn add react-native-incoming-call`
+`$ yarn add @bob.hardcoder/react-native-incoming-call`
 
 ### Addition installation step
 
