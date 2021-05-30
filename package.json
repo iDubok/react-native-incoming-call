@@ -1,0 +1,24 @@
+{
+  "name": "@bob.hardcoder/react-native-incoming-call",
+  "version": "1.0.0",
+  "description": "Fork of improved version of react-native-incoming-call",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iDubok/react-native-incoming-call.git"
+  },
+  "keywords": [
+    "react-native",
+    "call-screen",
+    "voip"
+  ],
+  "author": "Bob Hardcoder",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/iDubok/react-native-incoming-call/issues"
+  },
+  "homepage": "https://github.com/iDubok/react-native-incoming-call#readme"
+}
