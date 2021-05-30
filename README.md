@@ -3,7 +3,7 @@
 > React Native module to display custom incoming call activity, best result when using with firebase background messaging. Only for Android since iOS we have VoIP.
 
 ## Fork note
-It's a fork of the most supported version of react-native-incoming-call originally created by @bkdev98 and improved by @icc-guerrero created to introduce some customizations and make the latest version available on npm since the author has no enough time to release the changes. Later, when it is good enough, it could be merged into the original repo.
+It's a fork of the most supported version of react-native-incoming-call originally created by [bkdev98](https://github.com/bkdev98/react-native-incoming-call) and improved by [icc-guerrero](https://github.com/UN-ICC/react-native-incoming-call) created to introduce some customizations and make the latest version available on npm since the author has no enough time to release the changes. Later, when it is good enough, it could be merged into the original repo.
 
 Yes I heard you could use **self managed ConnectionService** thing. But since I'm not an Android expert, this is a solution I found acceptable.
 
@@ -51,7 +51,7 @@ In `AndroidManifest.xml`:
 
 For RN >= 0.60, it's done. Otherwise:
 
-`$ react-native link react-native-incoming-call`
+`$ react-native link @bob.hardcoder/react-native-incoming-call`
 
 ## Usage
 
@@ -60,7 +60,7 @@ In `App.js`:
 ```javascript
 import {useEffect} from 'react';
 import {DeviceEventEmitter, Platform} from 'react-native';
-import IncomingCall from 'react-native-incoming-call';
+import IncomingCall from '@bob.hardcoder/react-native-incoming-call';
 
 // Listen to cancel and answer call events
 useEffect(() => {
@@ -92,7 +92,7 @@ In `index.js` or anywhere firebase background handler lies:
 ```javascript
 import messaging from '@react-native-firebase/messaging';
 import {DeviceEventEmitter} from 'react-native';
-import IncomingCall from 'react-native-incoming-call';
+import IncomingCall from '@bob.hardcoder/react-native-incoming-call';
 
 messaging().setBackgroundMessageHandler(async remoteMessage => {
   // Receive remote message
