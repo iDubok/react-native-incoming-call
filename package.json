@@ -1,6 +1,6 @@
 {
   "name": "@bob.hardcoder/react-native-incoming-call",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Fork of improved version of react-native-incoming-call by bkdev98 and icc-guerrero",
   "main": "index.js",
   "scripts": {
