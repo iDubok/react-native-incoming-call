@@ -14,8 +14,14 @@
     "react-native",
     "call-screen"
   ],
-  "author": "Bob Hardcoder",
-  "license": "ISC",
+  "author": {
+    "username": "bob.hardcoder",
+    "name": "Bob Hardcoder",
+    "email": "bob.hardcoder@gmail.com"
+  },
+  "license": "MIT",
+  "licenseFilename": "LICENSE",
+  "readmeFilename": "README.md",
   "bugs": {
     "url": "https://github.com/iDubok/react-native-incoming-call/issues"
   },
