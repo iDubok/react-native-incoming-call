@@ -30,27 +30,6 @@
                 android:layout_centerVertical="true"
                 android:layout_centerHorizontal="true"
             />
-
-            <ImageView
-                android:id="@+id/ivRing1"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:scaleType="fitXY"
-                android:layout_marginTop="10dp"
-                android:src="@drawable/ic_ring"
-                android:layout_centerVertical="true"
-                android:layout_centerHorizontal="true"
-            />
-
-            <ImageView
-                android:id="@+id/ivRing2"
-                android:layout_width="170dp"
-                android:layout_height="170dp"
-                android:scaleType="fitXY"
-                android:src="@drawable/ic_ring"
-                android:layout_centerVertical="true"
-                android:layout_centerHorizontal="true"
-            />
         </RelativeLayout>
 
         <TextView
@@ -100,17 +79,6 @@
                 android:scaleType="centerInside"
                 android:src="@drawable/ic_decline_call"
             />
-            <TextView
-                android:id="@+id/tvDecline"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="10dp"
-                android:textSize="14sp"
-                android:fontFamily="sans-serif"
-                android:textColor="#ADADAD"
-                android:text="@string/decline"
-                android:gravity="center"
-            />
         </LinearLayout>
 
         <LinearLayout
@@ -127,17 +95,6 @@
                 android:layout_height="60dp"
                 android:scaleType="centerInside"
                 android:src="@drawable/ic_accept_call"
-            />
-            <TextView
-                android:id="@+id/tvAccept"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="10dp"
-                android:textSize="14sp"
-                android:fontFamily="sans-serif"
-                android:textColor="#ADADAD"
-                android:text="@string/accept"
-                android:gravity="center"
             />
         </LinearLayout>
 
