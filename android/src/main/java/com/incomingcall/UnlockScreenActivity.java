@@ -1,7 +1,7 @@
 package com.incomingcall;
 
 import android.app.KeyguardManager;
-import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,21 +14,20 @@ import android.os.Vibrator;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.provider.Settings;
-import java.util.List;
+
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import android.app.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
-import android.app.ActivityManager;
-import android.app.ActivityManager.RunningAppProcessInfo;
 
 import com.facebook.react.bridge.Arguments;
-import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
-import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 import com.squareup.picasso.Picasso;
@@ -39,11 +38,12 @@ public class UnlockScreenActivity extends AppCompatActivity implements UnlockScr
     private TextView tvName;
     private TextView tvInfo;
     private ImageView ivAvatar;
+    private TextView tvAvatarInfo;
     private Integer timeout = 0;
     private String uuid = "";
     static boolean active = false;
     private static Vibrator v = (Vibrator) IncomingCallModule.reactContext.getSystemService(Context.VIBRATOR_SERVICE);
-    private long[] pattern = {0, 1000, 800};
+    private long[] pattern = {500, 300, 1000, 350, 1200, 1000};
     private static MediaPlayer player = MediaPlayer.create(IncomingCallModule.reactContext, Settings.System.DEFAULT_RINGTONE_URI);
     private static Activity fa;
     private Timer timer;
@@ -82,6 +82,7 @@ public class UnlockScreenActivity extends AppCompatActivity implements UnlockScr
         tvName = findViewById(R.id.tvName);
         tvInfo = findViewById(R.id.tvInfo);
         ivAvatar = findViewById(R.id.ivAvatar);
+        tvAvatarInfo = findViewById(R.id.tvAvatarInfo);
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
@@ -96,15 +97,35 @@ public class UnlockScreenActivity extends AppCompatActivity implements UnlockScr
                 String info = bundle.getString("info");
                 tvInfo.setText(info);
             }
+            if (bundle.containsKey("avatarRating")) {
+                Double rating = bundle.getDouble("avatarRating");
+                DecimalFormat ratingFormatter = new DecimalFormat("0.##", DecimalFormatSymbols.getInstance(Locale.US));
+                tvAvatarInfo.setText(ratingFormatter.format(rating));
+                tvAvatarInfo.setTextColor(getRatingColor(rating));
+            }
             if (bundle.containsKey("avatar")) {
                 String avatar = bundle.getString("avatar");
                 if (avatar != null) {
                     Picasso.get().load(avatar).transform(new CircleTransform()).into(ivAvatar);
                 }
             }
+            if (bundle.containsKey("ringtoneName")) {
+                String ringtoneName = bundle.getString("ringtoneName");
+                String packageName = IncomingCallModule.reactContext.getPackageName();
+                int resourceId = IncomingCallModule.reactContext.getResources().getIdentifier(ringtoneName, "raw", packageName);
+                if (resourceId > 0) {
+                    Uri ringtonePath = Uri.parse("android.resource://" + packageName + "/" + Integer.toString(resourceId));
+                    try {
+                        player.setDataSource(IncomingCallModule.reactContext, ringtonePath);
+                        player.prepareAsync();
+                    } catch (Exception ex) {
+                        Log.e(TAG, "unable to use ringtone: " + ex.toString());
+                    }                    
+                }                
+            }
             if (bundle.containsKey("timeout")) {
                 this.timeout = bundle.getInt("timeout");
-            }
+            }            
             else this.timeout = 0;
         }
 
@@ -143,6 +164,26 @@ public class UnlockScreenActivity extends AppCompatActivity implements UnlockScr
             }
         });
 
+    }
+
+    private int getRatingColor(Double rating) {
+        String colorString = "#000000";
+
+        if (rating >= 4.5) {
+            colorString = "#019633";
+        } else if (rating >= 4) {
+            colorString = "#31CA31";
+        } else if (rating >= 3.5) {
+            colorString = "#B9C700";
+        } else if (rating >= 3) {
+            colorString = "#FECA01";
+        } else if (rating >= 2) {
+            colorString = "#FD661F";
+        } else {
+            colorString = "#FA2C04";
+        }
+
+        return Color.parseColor(colorString);
     }
 
     @Override

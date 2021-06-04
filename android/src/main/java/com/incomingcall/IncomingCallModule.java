@@ -34,7 +34,7 @@ public class IncomingCallModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void display(String uuid, String name, String avatar, String info, int timeout) {
+    public void display(String uuid, String name, String avatar, String info, Double avatarRating, int timeout, String ringtoneName) {
         if (UnlockScreenActivity.active) {
             return;
         }
@@ -44,7 +44,9 @@ public class IncomingCallModule extends ReactContextBaseJavaModule {
             bundle.putString("name", name);
             bundle.putString("avatar", avatar);
             bundle.putString("info", info);
+            bundle.putDouble("avatarRating", avatarRating);
             bundle.putInt("timeout", timeout);
+            bundle.putString("ringtoneName", ringtoneName);
             Intent i = new Intent(reactContext, UnlockScreenActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             i.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED +

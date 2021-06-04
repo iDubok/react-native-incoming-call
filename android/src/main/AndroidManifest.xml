@@ -1,4 +1,3 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.incomingcall">
-
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.incomingcall">
+    <uses-permission android:name="android.permission.VIBRATE" />
 </manifest>
