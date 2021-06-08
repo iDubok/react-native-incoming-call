@@ -1,15 +1,20 @@
 package com.incomingcall;
 
 import android.app.KeyguardManager;
+import android.content.ContentResolver;
 import android.graphics.Color;
+import android.media.AudioManager;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.VibrationEffect;
 import android.util.Log;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.view.View;
-import android.net.Uri;
 import android.os.Vibrator;
 import android.content.Context;
 import android.media.MediaPlayer;
@@ -20,9 +25,9 @@ import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
-
 import android.app.Activity;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.facebook.react.bridge.Arguments;
@@ -42,19 +47,22 @@ public class UnlockScreenActivity extends AppCompatActivity implements UnlockScr
     private Integer timeout = 0;
     private String uuid = "";
     static boolean active = false;
-    private static Vibrator v = (Vibrator) IncomingCallModule.reactContext.getSystemService(Context.VIBRATOR_SERVICE);
-    private long[] pattern = {500, 300, 1000, 350, 1200, 1000};
-    private static MediaPlayer player = MediaPlayer.create(IncomingCallModule.reactContext, Settings.System.DEFAULT_RINGTONE_URI);
+    private static Vibrator vibrator;
+    private static Ringtone ringtone;
     private static Activity fa;
     private Timer timer;
+    static UnlockScreenActivity instance;
 
+    public static UnlockScreenActivity getInstance() {
+        return instance;
+    }
 
     @Override
     public void onStart() {
         super.onStart();
         if (this.timeout > 0) {
-              this.timer = new Timer();
-              this.timer.schedule(new TimerTask() {
+            timer = new Timer();
+            timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
                     // this code will be executed after timeout seconds
@@ -63,6 +71,7 @@ public class UnlockScreenActivity extends AppCompatActivity implements UnlockScr
             }, timeout);
         }
         active = true;
+        instance = this;
     }
 
     @Override
@@ -76,7 +85,6 @@ public class UnlockScreenActivity extends AppCompatActivity implements UnlockScr
         super.onCreate(savedInstanceState);
 
         fa = this;
-
         setContentView(R.layout.activity_call_incoming);
 
         tvName = findViewById(R.id.tvName);
@@ -99,7 +107,7 @@ public class UnlockScreenActivity extends AppCompatActivity implements UnlockScr
             }
             if (bundle.containsKey("avatarRating")) {
                 Double rating = bundle.getDouble("avatarRating");
-                DecimalFormat ratingFormatter = new DecimalFormat("0.##", DecimalFormatSymbols.getInstance(Locale.US));
+                DecimalFormat ratingFormatter = new DecimalFormat("0.00", DecimalFormatSymbols.getInstance(Locale.US));
                 tvAvatarInfo.setText(ratingFormatter.format(rating));
                 tvAvatarInfo.setTextColor(getRatingColor(rating));
             }
@@ -114,35 +122,32 @@ public class UnlockScreenActivity extends AppCompatActivity implements UnlockScr
                 String packageName = IncomingCallModule.reactContext.getPackageName();
                 int resourceId = IncomingCallModule.reactContext.getResources().getIdentifier(ringtoneName, "raw", packageName);
                 if (resourceId > 0) {
-                    Uri ringtonePath = Uri.parse("android.resource://" + packageName + "/" + Integer.toString(resourceId));
+                    Uri ringtonePath = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + packageName + "/" + Integer.toString(resourceId));
                     try {
-                        player.setDataSource(IncomingCallModule.reactContext, ringtonePath);
-                        player.prepareAsync();
+                        ringtone = RingtoneManager.getRingtone(this, ringtonePath);
                     } catch (Exception ex) {
                         Log.e(TAG, "unable to use ringtone: " + ex.toString());
-                    }                    
-                }                
+                    }
+                }
             }
             if (bundle.containsKey("timeout")) {
                 this.timeout = bundle.getInt("timeout");
-            }            
+            }
             else this.timeout = 0;
         }
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
                 | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
 
-        v.vibrate(pattern, 0);
-        player.start();
+        startRinging();
+
 
         AnimateImage acceptCallBtn = findViewById(R.id.ivAcceptCall);
         acceptCallBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 try {
-                    v.cancel();
-                    player.stop();
-                    player.prepareAsync();
+                    stopRinging();
                     acceptDialing();
                 } catch (Exception e) {
                     WritableMap params = Arguments.createMap();
@@ -157,9 +162,7 @@ public class UnlockScreenActivity extends AppCompatActivity implements UnlockScr
         rejectCallBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                v.cancel();
-                player.stop();
-                player.prepareAsync();
+                stopRinging();
                 dismissDialing();
             }
         });
@@ -192,10 +195,40 @@ public class UnlockScreenActivity extends AppCompatActivity implements UnlockScr
     }
 
     public void dismissIncoming() {
-        v.cancel();
-        player.stop();
-        player.prepareAsync();
+        stopRinging();
         dismissDialing();
+    }
+
+    private void startRinging() {
+        long[] pattern = {500, 300, 1000, 350, 1200, 1000};
+        vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        int ringerMode = ((AudioManager) getSystemService(Context.AUDIO_SERVICE)).getRingerMode();
+        if(ringerMode == AudioManager.RINGER_MODE_SILENT) return;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            VibrationEffect vibe = VibrationEffect.createWaveform(pattern, 0);
+            vibrator.vibrate(vibe);
+        }else{
+            vibrator.vibrate(pattern, 0);
+        }
+        if(ringerMode == AudioManager.RINGER_MODE_VIBRATE) return;
+
+        if (ringtone == null) {
+            ringtone = RingtoneManager.getRingtone(this, RingtoneManager.getActualDefaultRingtoneUri(getApplicationContext(), RingtoneManager.TYPE_RINGTONE));
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            ringtone.setLooping(true);
+        }
+        ringtone.play();
+    }
+
+    private void stopRinging() {
+        if (vibrator != null){
+            vibrator.cancel();
+        }
+        int ringerMode = ((AudioManager) getSystemService(Context.AUDIO_SERVICE)).getRingerMode();
+        if(ringerMode != AudioManager.RINGER_MODE_NORMAL) return;
+        ringtone.stop();
     }
 
     private void acceptDialing() {
@@ -203,7 +236,7 @@ public class UnlockScreenActivity extends AppCompatActivity implements UnlockScr
         params.putBoolean("accept", true);
         params.putString("uuid", uuid);
         if (timer != null){
-          timer.cancel();
+            timer.cancel();
         }
         if (!IncomingCallModule.reactContext.hasCurrentActivity()) {
             params.putBoolean("isHeadless", true);
@@ -211,14 +244,14 @@ public class UnlockScreenActivity extends AppCompatActivity implements UnlockScr
         KeyguardManager mKeyguardManager = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
 
         if (mKeyguardManager.isDeviceLocked()) {
-          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            mKeyguardManager.requestDismissKeyguard(this, new KeyguardManager.KeyguardDismissCallback() {
-              @Override
-              public void onDismissSucceeded() {
-                super.onDismissSucceeded();
-              }
-            });
-          }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                mKeyguardManager.requestDismissKeyguard(this, new KeyguardManager.KeyguardDismissCallback() {
+                    @Override
+                    public void onDismissSucceeded() {
+                        super.onDismissSucceeded();
+                    }
+                });
+            }
         }
 
         sendEvent("answerCall", params);
@@ -230,7 +263,7 @@ public class UnlockScreenActivity extends AppCompatActivity implements UnlockScr
         params.putBoolean("accept", false);
         params.putString("uuid", uuid);
         if (timer != null) {
-          timer.cancel();
+            timer.cancel();
         }
         if (!IncomingCallModule.reactContext.hasCurrentActivity()) {
             params.putBoolean("isHeadless", true);
