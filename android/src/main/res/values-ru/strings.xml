@@ -1,0 +1,5 @@
+<resources>
+    <string name="accept">Принять</string>
+    <string name="decline">Отклонить</string>
+    <string name="avatar">Изображение пользователя</string>
+</resources>

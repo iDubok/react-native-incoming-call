@@ -1,4 +1,5 @@
 <resources>
     <string name="accept">Accept</string>
     <string name="decline">Decline</string>
+    <string name="avatar">User Avatar</string>
 </resources>

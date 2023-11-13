@@ -1,37 +1,37 @@
 {
-  "name": "@bob.hardcoder/react-native-incoming-call",
-  "version": "1.0.3",
-  "description": "Fork of improved version of react-native-incoming-call by bkdev98 and icc-guerrero",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/iDubok/react-native-incoming-call.git"
-  },
-  "keywords": [
-    "react-native",
-    "call-screen"
-  ],
-  "author": {
-    "username": "bob.hardcoder",
-    "name": "Bob Hardcoder",
-    "email": "bob.hardcoder@gmail.com"
-  },
-  "license": "MIT",
-  "licenseFilename": "LICENSE",
-  "readmeFilename": "README.md",
-  "bugs": {
-    "url": "https://github.com/iDubok/react-native-incoming-call/issues"
-  },
-  "homepage": "https://github.com/iDubok/react-native-incoming-call#readme",
-  "peerDependencies": {
-    "react": "^16.8.1",
-    "react-native": ">=0.59.0-rc.0 <1.0.x"
-  },
-  "devDependencies": {
-    "react": "^16.8.3",
-    "react-native": "^0.59.10"
-  }
+    "name": "@bob.hardcoder/react-native-incoming-call",
+    "version": "1.0.4",
+    "description": "Fork of improved version of react-native-incoming-call by bkdev98 and icc-guerrero",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/iDubok/react-native-incoming-call.git"
+    },
+    "keywords": [
+        "react-native",
+        "call-screen"
+    ],
+    "author": {
+        "username": "bob.hardcoder",
+        "name": "Bob Hardcoder",
+        "email": "bob.hardcoder@gmail.com"
+    },
+    "license": "MIT",
+    "licenseFilename": "LICENSE",
+    "readmeFilename": "README.md",
+    "bugs": {
+        "url": "https://github.com/iDubok/react-native-incoming-call/issues"
+    },
+    "homepage": "https://github.com/iDubok/react-native-incoming-call#readme",
+    "peerDependencies": {
+        "react": "^16.8.1",
+        "react-native": ">=0.59.0-rc.0 <1.0.x"
+    },
+    "devDependencies": {
+        "react": "^16.8.3",
+        "react-native": "^0.59.10"
+    }
 }

@@ -42,8 +42,8 @@ public class UnlockScreenActivity extends AppCompatActivity implements UnlockScr
     private static final String TAG = "MessagingService";
     private TextView tvName;
     private TextView tvInfo;
+    private TextView tvCallType;
     private ImageView ivAvatar;
-    private TextView tvAvatarInfo;
     private Integer timeout = 0;
     private String uuid = "";
     static boolean active = false;
@@ -89,8 +89,8 @@ public class UnlockScreenActivity extends AppCompatActivity implements UnlockScr
 
         tvName = findViewById(R.id.tvName);
         tvInfo = findViewById(R.id.tvInfo);
+        tvCallType = findViewById(R.id.tvCallType);
         ivAvatar = findViewById(R.id.ivAvatar);
-        tvAvatarInfo = findViewById(R.id.tvAvatarInfo);
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
@@ -105,11 +105,13 @@ public class UnlockScreenActivity extends AppCompatActivity implements UnlockScr
                 String info = bundle.getString("info");
                 tvInfo.setText(info);
             }
-            if (bundle.containsKey("avatarRating")) {
-                Double rating = bundle.getDouble("avatarRating");
-                DecimalFormat ratingFormatter = new DecimalFormat("0.00", DecimalFormatSymbols.getInstance(Locale.US));
-                tvAvatarInfo.setText(ratingFormatter.format(rating));
-                tvAvatarInfo.setTextColor(getRatingColor(rating));
+            if (bundle.containsKey("callType")) {
+                String callType = bundle.getString("callType");
+                if (callType != null) {
+                    tvCallType.setText(callType);
+                } else {
+                    tvCallType.setVisibility(View.INVISIBLE);
+                }
             }
             if (bundle.containsKey("avatar")) {
                 String avatar = bundle.getString("avatar");
@@ -167,26 +169,6 @@ public class UnlockScreenActivity extends AppCompatActivity implements UnlockScr
             }
         });
 
-    }
-
-    private int getRatingColor(Double rating) {
-        String colorString = "#000000";
-
-        if (rating >= 4.5) {
-            colorString = "#019633";
-        } else if (rating >= 4) {
-            colorString = "#31CA31";
-        } else if (rating >= 3.5) {
-            colorString = "#B9C700";
-        } else if (rating >= 3) {
-            colorString = "#FECA01";
-        } else if (rating >= 2) {
-            colorString = "#FD661F";
-        } else {
-            colorString = "#FA2C04";
-        }
-
-        return Color.parseColor(colorString);
     }
 
     @Override
